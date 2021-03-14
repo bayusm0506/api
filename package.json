@@ -1,0 +1,19 @@
+{
+  "name": "api.bayusm.com",
+  "version": "1.0.0",
+  "description": "Project Apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "keywords": [
+    "project"
+  ],
+  "author": "Bayu Setra Maulana",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.5.1"
+  }
+}
