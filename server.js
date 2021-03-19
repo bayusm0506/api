@@ -38,5 +38,3 @@ function normalizePort(val) {
 
   return false;
 }
-
-module.exports = app;
