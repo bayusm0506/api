@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
-var port = 3000;
+var port = normalizePort(process.env.PORT || "3000");
 
 app.use(bodyParser.json());
 app.use(
@@ -18,3 +18,19 @@ app.get("/", (request, response) => {
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
