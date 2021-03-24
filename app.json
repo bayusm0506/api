@@ -1,0 +1,26 @@
+{
+  "apps": [
+    {
+      "name": "APPS_KEUANGAN",
+      "script": "app.js",
+      "ignore_watch": ["node_modules"],
+      "watch_options": {
+        "followSymlinks": false
+      },
+      "exec_mode": "cluster",
+      "watch": true,
+      "max_memory_restart": "150M",
+      "instances": 1,
+      "env_production": {
+        "NODE_ENV": "production",
+        "DB_HOST": "localhost",
+        "DB_DIALECT": "postgres",
+        "DB_USER": "postgres",
+        "DB_PASS": "TESTER123",
+        "DB_PORT": 5432,
+        "DB_SCEM": "",
+        "PORT": 2022
+      }
+    }
+  ]
+}

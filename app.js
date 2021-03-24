@@ -2,8 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
-require("dotenv").config();
-
 const helpers = require("./helpers");
 
 const port = helpers.normalizePort(process.env.PORT || "3000");
@@ -16,7 +14,9 @@ app.use(
 );
 
 app.get("/", (request, response) => {
-  response.json({ info: "Node.js, Express, and Postgres API" });
+  response.json({
+    info: "Node.js, Express, and Postgres API with port : " + port,
+  });
 });
 
 app.listen(port, () => {
