@@ -1,3 +1,6 @@
 .htaccess
 node_modules
 *.env
+yarn.lock
+app.json
+package-lock.json

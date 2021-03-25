@@ -2,7 +2,7 @@ const status = require("../../helpers/status");
 
 const controller = {};
 
-controller.index = async (req, res, next) => {
+controller.index = async (req, res) => {
   res
     .status(status.code.success)
     .json(

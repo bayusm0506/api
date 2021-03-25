@@ -39,6 +39,7 @@ app.get("/", (request, response) => {
   });
 });
 
+app.use("/register", router.register);
 app.use("/mobile", router.mobile);
 
 // catch 404 and forward to error handler

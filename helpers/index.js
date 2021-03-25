@@ -16,4 +16,6 @@ helpers.normalizePort = (val) => {
   return false;
 };
 
+helpers.generateToken = require("crypto").randomBytes(64).toString("hex");
+
 module.exports = helpers;
