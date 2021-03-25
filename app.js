@@ -9,6 +9,7 @@ const app = express();
 
 const helpers = require("./helpers");
 const status = require("./helpers/status");
+const router = require("./routes");
 
 // Adds a X-Response-Time header to responses.
 app.use(responseTime());
@@ -32,11 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
 
-app.get("/", (request, response) => {
-  response.json({
-    info: "Node.js, Express, and Postgres API with port : " + port,
-  });
-});
+app.use("/mobile", router.mobile);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
