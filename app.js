@@ -33,6 +33,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
 
+app.get("/", (request, response) => {
+  response.json({
+    info: "APIS FOR LEARNING",
+  });
+});
+
 app.use("/mobile", router.mobile);
 
 // catch 404 and forward to error handler
