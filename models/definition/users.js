@@ -59,7 +59,7 @@ const Users = DB.define(
     },
   },
   {
-    schema: "myapp_keuangan",
+    schema: "myapp_khas",
     tableName: "users",
     timestamps: false,
   }

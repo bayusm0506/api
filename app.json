@@ -13,13 +13,14 @@
       "instances": 1,
       "env_production": {
         "NODE_ENV": "production",
-        "DB_HOST": "localhost",
+        "DB_HOST": "202.52.147.81",
         "DB_DIALECT": "postgres",
-        "DB_USER": "postgres",
-        "DB_PASS": "TESTER123",
+        "DB_USER": "bayusmco_myapps",
+        "DB_PASS": "datamaster0506",
         "DB_PORT": 5432,
-        "DB_SCEM": "",
-        "PORT": 2022
+        "DB_SCEM": "bayusmco_myapp",
+        "PORT": 2021,
+        "TOKEN_SECRET": "8c72fd24161c116c59e4c9261904db11b367439c2e164bf0f7a1c7f2a0bd3020f0ef6b1a6d9e757b99d70ac0858c5facc6005efc8ecab25dbff4344fbc2edf34"
       }
     }
   ]
