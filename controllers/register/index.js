@@ -45,15 +45,13 @@ controller.register = async (req, res) => {
   } else {
     data.password = bcrypt.hashSync(data.password, 10);
 
+    // create a token
+    data.token = generateAccessToken({ username: data.username });
+
     // Execute Login
     let result = await service.register(data);
 
     if (result.code === "01") {
-      // create a token
-      let token = generateAccessToken({ id: result.data.id_user });
-
-      result.data.token = token;
-
       res
         .status(status.code.success)
         .json(
@@ -86,13 +84,14 @@ controller.login = async (req, res) => {
   if (user_detail.code === "01") {
     if (bcrypt.compareSync(data.password, user_detail.data.password)) {
       // Passwords match
-
       // if user is found and password is valid
       // create a token
-      let token = generateAccessToken({ id: user_detail.data.id_user });
+      let token = generateAccessToken({ username: user_detail.data.username });
 
       user_detail.data.auth = true;
       user_detail.data.token = token;
+
+      await service.updateToken(user_detail, data);
 
       res
         .status(status.code.success)

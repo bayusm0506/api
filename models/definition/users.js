@@ -57,6 +57,11 @@ const Users = DB.define(
         );
       },
     },
+    token: {
+      type: Sequelize.STRING(200),
+      field: "token",
+      allowNull: false,
+    },
   },
   {
     schema: "myapp_khas",
