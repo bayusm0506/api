@@ -91,7 +91,7 @@ controller.login = async (req, res) => {
       user_detail.data.auth = true;
       user_detail.data.token = token;
 
-      await service.updateToken(user_detail, data);
+      await service.updateToken(user_detail, data); // Update token & last login
 
       res
         .status(status.code.success)
