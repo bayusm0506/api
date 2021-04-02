@@ -1,7 +1,7 @@
-var Sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 
 const db = new Sequelize(
-  process.env.DB_SCEM,
+  process.env.DB_SCHEMA,
   process.env.DB_USER,
   process.env.DB_PASS,
   {

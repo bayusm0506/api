@@ -3,6 +3,11 @@ const service = {};
 const model = require("../../models");
 const status = require("../../helpers/status");
 
+const { Op } = require("sequelize");
+
+// Operator Alias
+// require("../../config/operator");
+
 service.register = async (data) => {
   try {
     // Create Data Register
@@ -10,6 +15,15 @@ service.register = async (data) => {
 
     let result = await model.Users.findOne({
       raw: true,
+      attributes: {
+        exclude: [
+          "id_user",
+          "password",
+          "created_at",
+          "updated_at",
+          "last_login",
+        ],
+      },
       where: { username: data.username, email: data.email },
     });
 
@@ -34,6 +48,7 @@ service.userDetail = async (data) => {
     // Create Data Register
     let result = await model.Users.findOne({
       raw: true,
+      attributes: { exclude: ["created_at", "updated_at", "last_login"] },
       where: { username: data.username },
     });
 
@@ -58,17 +73,41 @@ service.userDetail = async (data) => {
   return response;
 };
 
-service.getUsers = async (data) => {
+service.checkAccess = async (data) => {
+  return await model.Roles.findAll({
+    raw: true,
+    nest: true,
+    include: [
+      {
+        model: model.Users,
+        where: {
+          [Op.and]: [
+            {
+              username: data.username,
+            },
+          ],
+        },
+      },
+    ],
+  });
+};
+
+service.getUsers = async () => {
   try {
     // get all data user
     let result = await model.Users.findAll({
       raw: true,
+      nest: true,
+      attributes: {
+        exclude: ["password", "created_at", "updated_at", "last_login"],
+      },
     });
     response = {
       code: "01",
       data: result,
     };
   } catch (error) {
+    console.log("error", error);
     response = {
       code: "02",
       data: [],
