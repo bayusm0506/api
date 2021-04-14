@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const status = require("../../helpers/status");
 const CONST = require("../../config/const");
+const catchAsync = require("../../utils/CatchAsync");
 
 // Validate
 const validate = require("../../middlewares/validate");
@@ -13,7 +14,7 @@ const service = require("./service");
 
 const controller = {};
 
-controller.index = async (req, res) => {
+controller.index = catchAsync(async (req, res) => {
   res
     .status(status.code.success)
     .json(
@@ -23,9 +24,9 @@ controller.index = async (req, res) => {
         status.description.DASHBOARD
       )
     );
-};
+});
 
-controller.register = async (req, res) => {
+controller.register = catchAsync(async (req, res) => {
   let data = req.body;
   data.created_at = CONST.CURRENT_DATE;
   data.updated_at = CONST.CURRENT_DATE;
@@ -76,9 +77,9 @@ controller.register = async (req, res) => {
         );
     }
   }
-};
+});
 
-controller.login = async (req, res) => {
+controller.login = catchAsync(async (req, res) => {
   let data = req.body;
   data.last_login = CONST.CURRENT_DATE;
 
@@ -148,9 +149,9 @@ controller.login = async (req, res) => {
         );
     }
   }
-};
+});
 
-controller.users = async (req, res) => {
+controller.users = catchAsync(async (req, res) => {
   let result = await service.getUsers();
   res
     .status(status.code.success)
@@ -162,6 +163,6 @@ controller.users = async (req, res) => {
         result.data
       )
     );
-};
+});
 
 module.exports = controller;

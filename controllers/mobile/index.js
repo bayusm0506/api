@@ -1,8 +1,9 @@
 const status = require("../../helpers/status");
+const catchAsync = require("../../utils/CatchAsync");
 
 const controller = {};
 
-controller.index = async (req, res) => {
+controller.index = catchAsync(async (req, res) => {
   res
     .status(status.code.success)
     .json(
@@ -12,6 +13,6 @@ controller.index = async (req, res) => {
         status.description.DASHBOARD
       )
     );
-};
+});
 
 module.exports = controller;
