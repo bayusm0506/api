@@ -49,7 +49,9 @@ controller.register = catchAsync(async (req, res) => {
     data.password = bcrypt.hashSync(data.password, 10);
 
     // create a token
-    data.token = generateAccessToken({ username: data.username });
+    data.token = generateAccessToken({
+      username: data.username
+    });
 
     // Execute Login
     let result = await service.register(data);
