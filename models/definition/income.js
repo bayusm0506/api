@@ -5,7 +5,7 @@ const DB = require("../../config/database");
 const Income = DB.define(
     "Income",
     {
-        id_expenditure: {
+        id_income: {
             type: Sequelize.BIGINT,
             field: "id",
             allowNull: false,
@@ -60,7 +60,7 @@ const Income = DB.define(
     },
     {
         schema: "myapp_khas",
-        tableName: "expenditure",
+        tableName: "income",
         timestamps: false,
     }
 );

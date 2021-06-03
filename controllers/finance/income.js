@@ -10,11 +10,11 @@ const CONST = require("../../config/const");
 
 const controller = {};
 
-controller.getExpenditure = catchAsync(async (req, res) => {
+controller.getIncome = catchAsync(async (req, res) => {
     let data = req.query;
 
     // Get Data
-    let result = await service.getExpenditure(data);
+    let result = await service.getIncome(data);
 
     if (result.code === "01") {
         res
@@ -40,11 +40,11 @@ controller.getExpenditure = catchAsync(async (req, res) => {
     }
 });
 
-controller.postExpenditure = catchAsync(async (req, res) => {
+controller.postIncome = catchAsync(async (req, res) => {
     let data = req.body;
 
     // Validate Expenditure
-    let cek = await validate.expenditure.checkExpenditure(data);
+    let cek = await validate.income.checkIncome(data);
 
     if (!cek.valid) {
         res
@@ -64,7 +64,7 @@ controller.postExpenditure = catchAsync(async (req, res) => {
         data.created_at = CONST.CURRENT_DATE;
 
         // Execute
-        let result = await service.postExpenditure(data);
+        let result = await service.postIncome(data);
 
         if (result.code === "01") {
             res
@@ -91,11 +91,11 @@ controller.postExpenditure = catchAsync(async (req, res) => {
     }
 });
 
-controller.putExpenditure = catchAsync(async (req, res) => {
-    let id_expenditure = req.params.id;
+controller.putIncome = catchAsync(async (req, res) => {
+    let id_income = req.params.id;
     let data = req.body;
     // // Validate Expenditure
-    let cek = await validate.expenditure.checkExpenditure(data);
+    let cek = await validate.income.checkIncome(data);
 
     if (!cek.valid) {
         res
@@ -112,7 +112,7 @@ controller.putExpenditure = catchAsync(async (req, res) => {
         data.updated_at = CONST.CURRENT_DATE;
 
         // Execute
-        let result = await service.putExpenditure(id_expenditure, data);
+        let result = await service.putIncome(id_income, data);
 
         if (result.code === "01") {
             res
@@ -139,11 +139,11 @@ controller.putExpenditure = catchAsync(async (req, res) => {
     }
 });
 
-controller.delExpenditure = catchAsync(async (req, res) => {
+controller.delIncome = catchAsync(async (req, res) => {
     let id_category = req.params.id;
     // // Validate Expenditure
     // Execute
-    let result = await service.delExpenditure(id_category);
+    let result = await service.delIncome(id_category);
 
     if (result.code === "01") {
         res
