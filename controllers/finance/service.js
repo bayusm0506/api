@@ -7,6 +7,8 @@ const {
     Op
 } = require("sequelize");
 
+// Start Service Category
+
 service.getCategory = async (data) => {
     let response, where = {};
 
@@ -129,5 +131,136 @@ service.delCategory = async (id_category) => {
 
     return response;
 };
+
+// End Service Category
+
+// Start Service Expenditure
+
+service.getExpenditure = async (data) => {
+    let response, where = {};
+
+    if (data.user_id) {
+        where.user_id = data.user_id
+    }
+
+    console.log("where", where)
+
+    try {
+        let result = await model.Expenditure.findAll({
+            raw: true,
+            // where: where
+            where: where
+        });
+
+        if (result) {
+            response = {
+                code: "01",
+                description: status.description.VIEW,
+                data: result,
+            };
+        } else {
+            response = {
+                code: "01",
+                description: status.description.DATA_NOT_FOUND,
+                data: [],
+            };
+        }
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
+service.postExpenditure = async (data) => {
+    let response;
+    try {
+        await model.Expenditure.create(data)
+            .then((ress) => {
+                response = {
+                    code: "01",
+                    description: status.description.CREATE,
+                    data: data,
+                };
+            }).catch((error) => {
+                response = {
+                    code: "02",
+                    description: status.description.INSERT_FAILED,
+                    data: [],
+                };
+            });
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
+service.putExpenditure = async (id_expenditure, data) => {
+    let response;
+    try {
+        await model.Expenditure.update(data, {
+            where: {
+                id_expenditure: id_expenditure
+            }
+        })
+            .then((ress) => {
+                response = {
+                    code: "01",
+                    description: status.description.UPDATE,
+                    data: data,
+                };
+            }).catch((error) => {
+                response = {
+                    code: "02",
+                    description: status.description.UPDATE_FAILED,
+                    data: [],
+                };
+            });
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
+service.delExpenditure = async (id_expenditure) => {
+    let response;
+    try {
+        await model.Expenditure.destroy({
+            where: {
+                id_expenditure: id_expenditure
+            }
+        }).then((result) => {
+            response = {
+                code: "01",
+                description: status.description.DELETE,
+                data: {},
+            };
+        })
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
+// End Service Expenditure
 
 module.exports = service;

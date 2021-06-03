@@ -4,7 +4,8 @@ model.Users = require("./definition/users");
 model.UserRole = require("./definition/userRole");
 model.Roles = require("./definition/roles");
 model.Category = require("./definition/category");
-model.Ledger = require("./definition/ledger");
+model.Expenditure = require("./definition/expenditure");
+model.Income = require("./definition/income");
 
 model.Users.belongsToMany(model.Roles, {
   through: model.UserRole,

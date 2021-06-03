@@ -12,9 +12,8 @@ validator.checkExpenditure = async (data) => {
             detail: { type: "string", minLength: 1 },
             category_id: { type: "string", minLength: 1 },
             user_id: { type: "string", minLength: 1 },
-            created_by: { type: "string", minLength: 1 },
         },
-        required: ["transaction_date", "amount", "detail", "category_id", "user_id", "created_by"],
+        required: ["transaction_date", "amount", "detail", "category_id", "user_id"],
     };
 
     const validate = ajv.compile(schema);
