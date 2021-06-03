@@ -167,4 +167,46 @@ controller.users = catchAsync(async (req, res) => {
     );
 });
 
+controller.refreshToken = catchAsync(async (req, res) => {
+  let data = req.body;
+  data.last_login = CONST.CURRENT_DATE;
+
+  // Check Access Granted
+  let checkAccess = await service.checkAccess(data);
+
+  if (checkAccess.length == 0) {
+    res
+      .status(status.code.bad)
+      .json(
+        status.response(
+          status.code_response.error,
+          status.message.error,
+          "Anda tidak mempunyai akses, silahkan hubungi Administrator"
+        )
+      );
+  } else {
+    let user_detail = await service.userDetail(data);
+
+    let token = generateAccessToken({
+      username: user_detail.data.username,
+    });
+
+    user_detail.data.auth = true;
+    user_detail.data.token = token;
+
+    await service.updateToken(user_detail, data); // Update token & last login
+
+    res
+      .status(status.code.success)
+      .json(
+        status.response(
+          status.code_response.success,
+          status.message.success,
+          "Refresh Token Berhasil",
+          user_detail.data
+        )
+      );
+  }
+});
+
 module.exports = controller;
