@@ -20,7 +20,9 @@ const port = helpers.normalizePort(process.env.PORT || "3000");
 app.use(bodyParser.json());
 
 // support parsing of application/x-www-form-urlencoded post data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 // Protection
 app.use(helmet());
@@ -29,7 +31,9 @@ app.use(helmet());
 app.use(cors());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
 
@@ -41,6 +45,7 @@ app.get("/", (request, response) => {
 
 app.use("/register", router.register);
 app.use("/mobile", router.mobile);
+app.use("/finance", router.finance);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
