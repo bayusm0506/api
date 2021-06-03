@@ -114,7 +114,7 @@ controller.login = catchAsync(async (req, res) => {
 
         user_detail.data.auth = true;
         user_detail.data.token = token;
-        user_detail.expiresIn = 86400;
+        user_detail.data.expiresIn = 86400;
 
         await service.updateToken(user_detail, data); // Update token & last login
 
@@ -194,7 +194,7 @@ controller.refreshToken = catchAsync(async (req, res) => {
 
     user_detail.data.auth = true;
     user_detail.data.token = token;
-    user_detail.expiresIn = 86400;
+    user_detail.data.expiresIn = 86400;
 
     await service.updateToken(user_detail, data); // Update token & last login
 
