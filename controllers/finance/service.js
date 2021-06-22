@@ -2,6 +2,7 @@ const service = {};
 
 const model = require("../../models");
 const status = require("../../helpers/status");
+const api = require("./api")
 
 const {
     Op
@@ -17,6 +18,11 @@ service.getCategory = async (data) => {
             [Op.iLike]: '%' + data.category_name + '%'
         }
     }
+
+    if (data.id) {
+        where.id_category = data.id;
+    }
+
     try {
         let result = await model.Category.findAll({
             raw: true,
@@ -144,24 +150,33 @@ service.getExpenditure = async (data) => {
     }
 
     try {
-        let result = await model.Expenditure.findAll({
+        await model.Expenditure.findAll({
             raw: true,
             where: where
-        });
+        }).then(async (result) => {
+            let mappingData = [];
 
-        if (result) {
-            response = {
-                code: "01",
-                description: status.description.VIEW,
-                data: result,
-            };
-        } else {
-            response = {
-                code: "01",
-                description: status.description.DATA_NOT_FOUND,
-                data: [],
-            };
-        }
+            await Promise.all(result.map(async (val) => {
+                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
+                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
+
+                mappingData.push(val)
+            }))
+
+            if (mappingData) {
+                response = {
+                    code: "01",
+                    description: status.description.VIEW,
+                    data: mappingData,
+                };
+            } else {
+                response = {
+                    code: "01",
+                    description: status.description.DATA_NOT_FOUND,
+                    data: [],
+                };
+            }
+        });
     } catch (error) {
         // Error
         response = {
@@ -270,24 +285,33 @@ service.getIncome = async (data) => {
     }
 
     try {
-        let result = await model.Income.findAll({
+        await model.Income.findAll({
             raw: true,
             where: where
-        });
+        }).then(async (result) => {
+            let mappingData = [];
 
-        if (result) {
-            response = {
-                code: "01",
-                description: status.description.VIEW,
-                data: result,
-            };
-        } else {
-            response = {
-                code: "01",
-                description: status.description.DATA_NOT_FOUND,
-                data: [],
-            };
-        }
+            await Promise.all(result.map(async (val) => {
+                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
+                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
+
+                mappingData.push(val)
+            }))
+
+            if (mappingData) {
+                response = {
+                    code: "01",
+                    description: status.description.VIEW,
+                    data: mappingData,
+                };
+            } else {
+                response = {
+                    code: "01",
+                    description: status.description.DATA_NOT_FOUND,
+                    data: [],
+                };
+            }
+        });
     } catch (error) {
         // Error
         response = {
