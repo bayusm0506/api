@@ -152,7 +152,8 @@ service.getExpenditure = async (data) => {
     try {
         await model.Expenditure.findAll({
             raw: true,
-            where: where
+            where: where,
+            order: [['transaction_date', 'DESC']]
         }).then(async (result) => {
             let mappingData = [];
 
@@ -162,6 +163,10 @@ service.getExpenditure = async (data) => {
 
                 mappingData.push(val)
             }))
+
+            mappingData.sort(function (a, b) {
+                return new Date(b.transaction_date) - new Date(a.transaction_date);
+            })
 
             if (mappingData) {
                 response = {
@@ -297,6 +302,10 @@ service.getIncome = async (data) => {
 
                 mappingData.push(val)
             }))
+
+            mappingData.sort(function (a, b) {
+                return new Date(b.transaction_date) - new Date(a.transaction_date);
+            })
 
             if (mappingData) {
                 response = {
