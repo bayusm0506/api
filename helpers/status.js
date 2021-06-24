@@ -52,8 +52,8 @@ module.exports = {
   response_success: (desc, data) => ({
     code: code_response.success,
     status: message.success,
-    message: data,
-    data: ress,
+    message: desc,
+    data: data,
   }),
 
   response_error: (desc) => ({
