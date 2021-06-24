@@ -3,12 +3,12 @@ const router = express.Router();
 const controller = require("../../controllers");
 
 const verifyToken = require("../../middlewares/verifyToken");
+const Validate = require("../../middlewares/validate");
 
 // Kategori
-router.get("/", verifyToken, controller.category.index);
 router.get("/kategori", controller.category.getKategori);
-router.post("/kategori", verifyToken, controller.category.postKategori);
-router.put("/kategori/:id", verifyToken, controller.category.putKategori);
+router.post("/kategori", verifyToken, Validate.category.checkKategory, controller.category.postKategori);
+router.put("/kategori/:id", verifyToken, Validate.category.checkKategory, controller.category.putKategori);
 router.delete("/kategori/:id", verifyToken, controller.category.delKategori);
 
 // Expenditure

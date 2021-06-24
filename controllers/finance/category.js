@@ -1,9 +1,6 @@
 const status = require("../../helpers/status");
 const catchAsync = require("../../utils/CatchAsync");
 
-// Validate
-const validate = require("../../middlewares/validate");
-
 // Service
 const service = require("./service");
 
@@ -13,9 +10,7 @@ controller.index = catchAsync(async (req, res) => {
     res
         .status(status.code.success)
         .json(
-            status.response(
-                status.code.success,
-                status.message.success,
+            status.response_success(
                 status.description.DASHBOARD
             )
         );
@@ -31,9 +26,7 @@ controller.getKategori = catchAsync(async (req, res) => {
         res
             .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.success,
-                    status.message.success,
+                status.response_success(
                     result.description,
                     result.data
                 )
@@ -42,9 +35,7 @@ controller.getKategori = catchAsync(async (req, res) => {
         res
             .status(status.code.bad)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
+                status.response_error(
                     result.description
                 )
             );
@@ -54,92 +45,53 @@ controller.getKategori = catchAsync(async (req, res) => {
 controller.postKategori = catchAsync(async (req, res) => {
     let data = req.body;
 
-    // Validate Kategori
-    let cek = await validate.category.checkKategory(data);
+    // Execute
+    let result = await service.postCategory(data);
 
-    if (!cek.valid) {
+    if (result.code === "01") {
         res
-            .status(status.code.bad)
+            .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
-                    status.description.VALIDATE,
-                    cek.validate.errors
+                status.response_success(
+                    result.description,
+                    result.data
                 )
             );
     } else {
-        // Execute
-        let result = await service.postCategory(data);
-
-        if (result.code === "01") {
-            res
-                .status(status.code.success)
-                .json(
-                    status.response(
-                        status.code_response.success,
-                        status.message.success,
-                        result.description,
-                        result.data
-                    )
-                );
-        } else {
-            res
-                .status(status.code.bad)
-                .json(
-                    status.response(
-                        status.code_response.error,
-                        status.message.error,
-                        result.description
-                    )
-                );
-        }
+        res
+            .status(status.code.bad)
+            .json(
+                status.response_error(
+                    result.description
+                )
+            );
     }
 });
 
 controller.putKategori = catchAsync(async (req, res) => {
     let id_category = req.params.id;
     let data = req.body;
-    // // Validate Kategori
-    let cek = await validate.category.checkKategory(data);
 
-    if (!cek.valid) {
+    // Execute
+    let result = await service.putCategory(id_category, data);
+
+    if (result.code === "01") {
         res
-            .status(status.code.bad)
+            .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
-                    status.description.VALIDATE,
-                    cek.validate.errors
+                status.response_success(
+                    result.description,
+                    result.data
                 )
             );
     } else {
-        // Execute
-        let result = await service.putCategory(id_category, data);
-
-        if (result.code === "01") {
-            res
-                .status(status.code.success)
-                .json(
-                    status.response(
-                        status.code_response.success,
-                        status.message.success,
-                        result.description,
-                        result.data
-                    )
-                );
-        } else {
-            res
-                .status(status.code.bad)
-                .json(
-                    status.response(
-                        status.code_response.error,
-                        status.message.error,
-                        result.description
-                    )
-                );
-        }
+        res
+            .status(status.code.bad)
+            .json(
+                status.response_error(
+                    result.description
+                )
+            );
     }
 });
 
@@ -153,9 +105,7 @@ controller.delKategori = catchAsync(async (req, res) => {
         res
             .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.success,
-                    status.message.success,
+                status.response_success(
                     result.description,
                     result.data
                 )
@@ -164,9 +114,7 @@ controller.delKategori = catchAsync(async (req, res) => {
         res
             .status(status.code.bad)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
+                status.response_error(
                     result.description
                 )
             );
