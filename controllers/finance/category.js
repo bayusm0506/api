@@ -6,16 +6,6 @@ const service = require("./service");
 
 const controller = {};
 
-controller.index = catchAsync(async (req, res) => {
-    res
-        .status(status.code.success)
-        .json(
-            status.response_success(
-                status.description.DASHBOARD
-            )
-        );
-});
-
 controller.getKategori = catchAsync(async (req, res) => {
     let data = req.query;
 

@@ -52,11 +52,7 @@ app.use(function (req, res, next) {
   res
     .status(status.code.bad)
     .json(
-      status.response(
-        status.code.bad,
-        status.message.error,
-        "Path Tidak Ditemukan"
-      )
+      status.response_notfound(status.description.PATH_NOT_FOUND)
     );
 });
 

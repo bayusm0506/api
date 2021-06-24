@@ -34,6 +34,11 @@ const description = {
   UPDATE_FAILED: "Data Gagal di Perbarui",
   DELETE_FAILED: "Data Gagal di Hapus",
   DATA_NOT_FOUND: "Data Tidak di Temukan",
+  PASSWORD_MATCH: "Passwords match",
+  PASSWORD_DO_NOT_MATCH: "Passwords don't match",
+  REFRESH_TOKEN_SUCCESS: "Refresh Token Berhasil",
+  CANNOT_ACCESS: "Anda tidak mempunyai akses, silahkan hubungi Administrator",
+  PATH_NOT_FOUND: "Path Tidak Ditemukan",
 }
 
 module.exports = {
@@ -52,6 +57,12 @@ module.exports = {
   response_error: (desc) => ({
     code: code_response.error,
     status: message.error,
+    message: desc,
+  }),
+
+  response_notfound: (desc) => ({
+    code: code_response.error,
+    status: message.not_found,
     message: desc,
   }),
 

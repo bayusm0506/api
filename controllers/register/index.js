@@ -3,9 +3,6 @@ const status = require("../../helpers/status");
 const CONST = require("../../config/const");
 const catchAsync = require("../../utils/CatchAsync");
 
-// Validate
-const validate = require("../../middlewares/validate");
-
 // Generate Token
 const generateAccessToken = require("../../middlewares/generateAccessToken");
 
@@ -14,70 +11,38 @@ const service = require("./service");
 
 const controller = {};
 
-controller.index = catchAsync(async (req, res) => {
-  res
-    .status(status.code.success)
-    .json(
-      status.response(
-        status.code.success,
-        status.message.success,
-        status.description.DASHBOARD
-      )
-    );
-});
-
 controller.register = catchAsync(async (req, res) => {
   let data = req.body;
   data.created_at = CONST.CURRENT_DATE;
   data.updated_at = CONST.CURRENT_DATE;
 
-  // Validate Login
-  let cek = await validate.register.checkRegister(data);
+  data.password = bcrypt.hashSync(data.password, 10);
 
-  if (!cek.valid) {
+  // create a token
+  data.token = generateAccessToken({
+    username: data.username
+  });
+
+  // Execute Login
+  let result = await service.register(data);
+
+  if (result.code === "01") {
     res
-      .status(status.code.bad)
+      .status(status.code.success)
       .json(
-        status.response(
-          status.code_response.error,
-          status.message.error,
-          status.description.VALIDATE,
-          cek.validate.errors
+        status.response_success(
+          result.description,
+          result.data
         )
       );
   } else {
-    data.password = bcrypt.hashSync(data.password, 10);
-
-    // create a token
-    data.token = generateAccessToken({
-      username: data.username
-    });
-
-    // Execute Login
-    let result = await service.register(data);
-
-    if (result.code === "01") {
-      res
-        .status(status.code.success)
-        .json(
-          status.response(
-            status.code_response.success,
-            status.message.success,
-            result.description,
-            result.data
-          )
-        );
-    } else {
-      res
-        .status(status.code.bad)
-        .json(
-          status.response(
-            status.code_response.error,
-            status.message.error,
-            result.description
-          )
-        );
-    }
+    res
+      .status(status.code.bad)
+      .json(
+        status.response_error(
+          result.description
+        )
+      );
   }
 });
 
@@ -92,10 +57,8 @@ controller.login = catchAsync(async (req, res) => {
     res
       .status(status.code.bad)
       .json(
-        status.response(
-          status.code_response.error,
-          status.message.error,
-          "Anda tidak mempunyai akses, silahkan hubungi Administrator"
+        status.response_error(
+          status.description.CANNOT_ACCESS
         )
       );
   } else {
@@ -121,10 +84,8 @@ controller.login = catchAsync(async (req, res) => {
         res
           .status(status.code.success)
           .json(
-            status.response(
-              status.code_response.success,
-              status.message.success,
-              "Passwords match",
+            status.response_success(
+              status.description.PASSWORD_MATCH,
               user_detail.data
             )
           );
@@ -133,10 +94,8 @@ controller.login = catchAsync(async (req, res) => {
         res
           .status(status.code.bad)
           .json(
-            status.response(
-              status.code_response.error,
-              status.message.error,
-              "Passwords don't match"
+            status.response_error(
+              status.description.PASSWORD_DO_NOT_MATCH
             )
           );
       }
@@ -144,11 +103,7 @@ controller.login = catchAsync(async (req, res) => {
       res
         .status(status.code.notfound)
         .json(
-          status.response(
-            status.code_response.error,
-            status.message.not_found,
-            status.description.DATA_NOT_FOUND
-          )
+          status.response_notfound(status.description.DATA_NOT_FOUND)
         );
     }
   }
@@ -159,9 +114,7 @@ controller.users = catchAsync(async (req, res) => {
   res
     .status(status.code.success)
     .json(
-      status.response(
-        status.code_response.success,
-        status.message.success,
+      status.response_success(
         status.description.VIEW,
         result.data
       )
@@ -179,10 +132,8 @@ controller.refreshToken = catchAsync(async (req, res) => {
     res
       .status(status.code.bad)
       .json(
-        status.response(
-          status.code_response.error,
-          status.message.error,
-          "Anda tidak mempunyai akses, silahkan hubungi Administrator"
+        status.response_error(
+          status.description.CANNOT_ACCESS
         )
       );
   } else {
@@ -201,10 +152,8 @@ controller.refreshToken = catchAsync(async (req, res) => {
     res
       .status(status.code.success)
       .json(
-        status.response(
-          status.code_response.success,
-          status.message.success,
-          "Refresh Token Berhasil",
+        status.response_success(
+          status.description.REFRESH_TOKEN_SUCCESS,
           user_detail.data
         )
       );

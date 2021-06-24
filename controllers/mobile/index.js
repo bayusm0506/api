@@ -7,9 +7,7 @@ controller.index = catchAsync(async (req, res) => {
   res
     .status(status.code.success)
     .json(
-      status.response(
-        status.code.success,
-        status.message.success,
+      status.response_success(
         status.description.DASHBOARD
       )
     );
