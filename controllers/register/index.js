@@ -170,4 +170,32 @@ controller.refreshToken = catchAsync(async (req, res) => {
   }
 });
 
+controller.updatePassword = catchAsync(async (req, res) => {
+  let id = req.params.id;
+  let data = req.body;
+  data.updated_at = CONST.CURRENT_DATE;
+  data.password = bcrypt.hashSync(data.password, 10);
+
+  let result = await service.updatePassword(id, data);
+
+  if (result.code === "01") {
+    res
+      .status(status.code.success)
+      .json(
+        status.response_success(
+          status.description.UPDATE,
+          result.data
+        )
+      );
+  } else {
+    res
+      .status(status.code.bad)
+      .json(
+        status.response_error(
+          result.description
+        )
+      );
+  }
+});
+
 module.exports = controller;

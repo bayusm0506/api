@@ -10,5 +10,6 @@ router.post("/register", Validate.register.checkRegister, controller.register.re
 router.post("/login", controller.register.login);
 router.post("/refreshToken", controller.register.refreshToken);
 router.get("/users", verifyToken, controller.register.users);
+router.put("/updatePassword/:id", verifyToken, controller.register.updatePassword);
 
 module.exports = router;

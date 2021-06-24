@@ -93,6 +93,8 @@ service.checkAccess = async (data) => {
 };
 
 service.getUsers = async () => {
+  let response;
+
   try {
     // get all data user
     let result = await model.Users.findAll({
@@ -126,6 +128,50 @@ service.updateToken = async (user_detail, data) => {
       },
     }
   );
+};
+
+service.updatePassword = async (id, data) => {
+  let response;
+
+  try {
+    let checkUser = await model.Users.findOne({ // Check User Exist
+      raw: true,
+      where: {
+        id_user: id
+      }
+    });
+
+    if (checkUser) {
+      await model.Users.update(data, {
+        where: {
+          id_user: id
+        },
+      }).then((result) => {
+        response = {
+          code: "01",
+          data: data,
+        };
+      }).catch((error) => {
+        response = {
+          code: "02",
+          description: { error: error.toString() },
+        };
+      })
+    } else {
+      response = {
+        code: "02",
+        description: status.description.DATA_NOT_FOUND,
+      };
+    }
+  } catch (error) {
+    // Catch Error
+    response = {
+      code: "02",
+      description: { error: error.toString() },
+    };
+  }
+
+  return response;
 };
 
 module.exports = service;
