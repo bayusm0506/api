@@ -36,7 +36,7 @@ service.register = async (data) => {
     // Error
     response = {
       code: "02",
-      description: JSON.stringify(error.parent.detail),
+      description: { error: error.parent.detail.toString() },
     };
   }
 
@@ -60,7 +60,7 @@ service.userDetail = async (data) => {
     } else {
       response = {
         code: "02",
-        data: {},
+        data: result,
       };
     }
   } catch (error) {
@@ -97,20 +97,19 @@ service.getUsers = async () => {
     // get all data user
     let result = await model.Users.findAll({
       raw: true,
-      nest: true,
       attributes: {
         exclude: ["password", "created_at", "updated_at", "last_login"],
       },
     });
+
     response = {
       code: "01",
       data: result,
     };
   } catch (error) {
-    console.log("error", error);
     response = {
       code: "02",
-      data: [],
+      description: { error: error.toString() },
     };
   }
 

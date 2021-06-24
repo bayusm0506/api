@@ -111,14 +111,24 @@ controller.login = catchAsync(async (req, res) => {
 
 controller.users = catchAsync(async (req, res) => {
   let result = await service.getUsers();
-  res
-    .status(status.code.success)
-    .json(
-      status.response_success(
-        status.description.VIEW,
-        result.data
-      )
-    );
+  if (result.code === "01") {
+    res
+      .status(status.code.success)
+      .json(
+        status.response_success(
+          status.description.VIEW,
+          result.data
+        )
+      );
+  } else {
+    res
+      .status(status.code.bad)
+      .json(
+        status.response_error(
+          result.description
+        )
+      );
+  }
 });
 
 controller.refreshToken = catchAsync(async (req, res) => {
