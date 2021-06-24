@@ -2,7 +2,8 @@ const Ajv = require("ajv");
 
 const validator = {};
 
-validator.checkExpenditure = async (data) => {
+validator.checkExpenditure = async (req, res, next) => {
+    let data = req.body;
     var ajv = new Ajv({ allErrors: true, async: true });
     var schema = {
         type: "object",
@@ -19,10 +20,15 @@ validator.checkExpenditure = async (data) => {
     const validate = ajv.compile(schema);
     const valid = validate(data);
 
-    return (data = {
-        validate: validate,
-        valid: valid,
-    });
+    if (!valid) {
+        res
+            .status(status.code.bad)
+            .json(
+                status.response_validation(validate.errors)
+            );
+    } else {
+        next();
+    }
 };
 
 module.exports = validator;

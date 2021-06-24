@@ -1,9 +1,6 @@
 const status = require("../../helpers/status");
 const catchAsync = require("../../utils/CatchAsync");
 
-// Validate
-const validate = require("../../middlewares/validate");
-
 // Service
 const service = require("./service");
 const CONST = require("../../config/const");
@@ -20,9 +17,7 @@ controller.getExpenditure = catchAsync(async (req, res) => {
         res
             .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.success,
-                    status.message.success,
+                status.response_success(
                     result.description,
                     result.data
                 )
@@ -31,9 +26,7 @@ controller.getExpenditure = catchAsync(async (req, res) => {
         res
             .status(status.code.bad)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
+                status.response_error(
                     result.description
                 )
             );
@@ -43,99 +36,60 @@ controller.getExpenditure = catchAsync(async (req, res) => {
 controller.postExpenditure = catchAsync(async (req, res) => {
     let data = req.body;
 
-    // Validate Expenditure
-    let cek = await validate.expenditure.checkExpenditure(data);
+    data.amount = parseInt(data.amount);
+    data.category_id = parseInt(data.category_id);
+    data.user_id = parseInt(data.user_id);
+    data.created_at = CONST.CURRENT_DATE;
 
-    if (!cek.valid) {
+    // Execute
+    let result = await service.postExpenditure(data);
+
+    if (result.code === "01") {
         res
-            .status(status.code.bad)
+            .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
-                    status.description.VALIDATE,
-                    cek.validate.errors
+                status.response_success(
+                    result.description,
+                    result.data
                 )
             );
     } else {
-        data.amount = parseInt(data.amount);
-        data.category_id = parseInt(data.category_id);
-        data.user_id = parseInt(data.user_id);
-        data.created_at = CONST.CURRENT_DATE;
-
-        // Execute
-        let result = await service.postExpenditure(data);
-
-        if (result.code === "01") {
-            res
-                .status(status.code.success)
-                .json(
-                    status.response(
-                        status.code_response.success,
-                        status.message.success,
-                        result.description,
-                        result.data
-                    )
-                );
-        } else {
-            res
-                .status(status.code.bad)
-                .json(
-                    status.response(
-                        status.code_response.error,
-                        status.message.error,
-                        result.description
-                    )
-                );
-        }
+        res
+            .status(status.code.bad)
+            .json(
+                status.response_error(
+                    result.description
+                )
+            );
     }
 });
 
 controller.putExpenditure = catchAsync(async (req, res) => {
     let id_expenditure = req.params.id;
     let data = req.body;
-    // // Validate Expenditure
-    let cek = await validate.expenditure.checkExpenditure(data);
 
-    if (!cek.valid) {
+    data.updated_at = CONST.CURRENT_DATE;
+
+    // Execute
+    let result = await service.putExpenditure(id_expenditure, data);
+
+    if (result.code === "01") {
         res
-            .status(status.code.bad)
+            .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
-                    status.description.VALIDATE,
-                    cek.validate.errors
+                status.response_success(
+                    result.description,
+                    result.data
                 )
             );
     } else {
-        data.updated_at = CONST.CURRENT_DATE;
-
-        // Execute
-        let result = await service.putExpenditure(id_expenditure, data);
-
-        if (result.code === "01") {
-            res
-                .status(status.code.success)
-                .json(
-                    status.response(
-                        status.code_response.success,
-                        status.message.success,
-                        result.description,
-                        result.data
-                    )
-                );
-        } else {
-            res
-                .status(status.code.bad)
-                .json(
-                    status.response(
-                        status.code_response.error,
-                        status.message.error,
-                        result.description
-                    )
-                );
-        }
+        res
+            .status(status.code.bad)
+            .json(
+                status.response_error(
+                    result.description
+                )
+            );
     }
 });
 
@@ -149,9 +103,7 @@ controller.delExpenditure = catchAsync(async (req, res) => {
         res
             .status(status.code.success)
             .json(
-                status.response(
-                    status.code_response.success,
-                    status.message.success,
+                status.response_success(
                     result.description,
                     result.data
                 )
@@ -160,9 +112,7 @@ controller.delExpenditure = catchAsync(async (req, res) => {
         res
             .status(status.code.bad)
             .json(
-                status.response(
-                    status.code_response.error,
-                    status.message.error,
+                status.response_error(
                     result.description
                 )
             );

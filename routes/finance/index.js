@@ -13,8 +13,8 @@ router.delete("/kategori/:id", verifyToken, controller.category.delKategori);
 
 // Expenditure
 router.get("/expenditure", verifyToken, controller.expenditure.getExpenditure);
-router.post("/expenditure", verifyToken, controller.expenditure.postExpenditure);
-router.put("/expenditure/:id", verifyToken, controller.expenditure.putExpenditure);
+router.post("/expenditure", verifyToken, Validate.expenditure.checkExpenditure, controller.expenditure.postExpenditure);
+router.put("/expenditure/:id", verifyToken, Validate.expenditure.checkExpenditure, controller.expenditure.putExpenditure);
 router.delete("/expenditure/:id", verifyToken, controller.expenditure.delExpenditure);
 
 // Income

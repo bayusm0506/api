@@ -42,13 +42,6 @@ module.exports = {
   message: message,
   description: description,
 
-  response: (code, status, message, ress) => ({
-    code: code,
-    status: status,
-    message: message,
-    data: ress,
-  }),
-
   response_success: (desc, data) => ({
     code: code_response.success,
     status: message.success,
