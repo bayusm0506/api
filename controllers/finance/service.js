@@ -1,7 +1,9 @@
 const service = {};
 
 const model = require("../../models");
+const query = require("../../models/raw-query");
 const status = require("../../helpers/status");
+const db = require("../../config/database");
 const api = require("./api")
 
 const {
@@ -143,17 +145,27 @@ service.delCategory = async (id_category) => {
 // Start Service Expenditure
 
 service.getExpenditure = async (data) => {
-    let response, where = {};
+    let response, where = "where 1=1", replacements = {};
+
+    if (data.month) {
+        where += " and extract (month from e.transaction_date) = :month";
+        replacements.month = data.month;
+    }
+
+    if (data.year) {
+        where += " and extract (year from e.transaction_date) = :year";
+        replacements.year = data.year;
+    }
 
     if (data.user_id) {
-        where.user_id = data.user_id
+        where += " and e.user_id = :user_id";
+        replacements.user_id = data.user_id;
     }
 
     try {
-        await model.Expenditure.findAll({
-            raw: true,
-            where: where,
-            order: [['transaction_date', 'DESC']]
+        await db.query(query.getExpenditure(where), {
+            replacements: replacements,
+            type: db.QueryTypes.SELECT
         }).then(async (result) => {
             let mappingData = [];
 
@@ -283,16 +295,27 @@ service.delExpenditure = async (id_expenditure) => {
 // Start Service Income
 
 service.getIncome = async (data) => {
-    let response, where = {};
+    let response, where = "where 1=1", replacements = {};
+
+    if (data.month) {
+        where += " and extract (month from i.transaction_date) = :month";
+        replacements.month = data.month;
+    }
+
+    if (data.year) {
+        where += " and extract (year from i.transaction_date) = :year";
+        replacements.year = data.year;
+    }
 
     if (data.user_id) {
-        where.user_id = data.user_id
+        where += " and e.user_id = :user_id";
+        replacements.user_id = data.user_id;
     }
 
     try {
-        await model.Income.findAll({
-            raw: true,
-            where: where
+        await db.query(query.getIncome(where), {
+            replacements: replacements,
+            type: db.QueryTypes.SELECT
         }).then(async (result) => {
             let mappingData = [];
 
