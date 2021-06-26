@@ -176,8 +176,8 @@ service.getExpenditure = async (data) => {
                 mappingData.push(val)
             }))
 
-            mappingData.sort(function (a, b) {
-                return parseInt(b.transaction_date) - parseInt(a.transaction_date);
+            await mappingData.sort(function (a, b) {
+                return new Date(b.transaction_date) - new Date(a.transaction_date);
             })
 
             if (mappingData) {
