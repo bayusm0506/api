@@ -167,24 +167,30 @@ service.getExpenditure = async (data) => {
             replacements: replacements,
             type: db.QueryTypes.SELECT
         }).then(async (result) => {
-            let mappingData = [];
+            let mappingData = [], mappingDataReal = [];
 
-            await Promise.all(result.map(async (val) => {
+            await Promise.all(result.map(async (val, i) => {
                 let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
                 val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
 
                 mappingData.push(val)
             }))
 
-            await mappingData.sort(function (a, b) {
+            mappingData.sort(function (a, b) {
                 return new Date(b.transaction_date) - new Date(a.transaction_date);
             })
 
-            if (mappingData) {
+            mappingData.map((val, i) => {
+                val.no = i + 1;
+
+                mappingDataReal.push(val)
+            })
+
+            if (mappingDataReal) {
                 response = {
                     code: "01",
                     description: status.description.VIEW,
-                    data: mappingData,
+                    data: mappingDataReal,
                 };
             } else {
                 response = {
@@ -317,7 +323,7 @@ service.getIncome = async (data) => {
             replacements: replacements,
             type: db.QueryTypes.SELECT
         }).then(async (result) => {
-            let mappingData = [];
+            let mappingData = [], mappingDataReal = [];
 
             await Promise.all(result.map(async (val) => {
                 let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
@@ -330,11 +336,17 @@ service.getIncome = async (data) => {
                 return new Date(b.transaction_date) - new Date(a.transaction_date);
             })
 
-            if (mappingData) {
+            mappingData.map((val, i) => {
+                val.no = i + 1;
+
+                mappingDataReal.push(val)
+            })
+
+            if (mappingDataReal) {
                 response = {
                     code: "01",
                     description: status.description.VIEW,
-                    data: mappingData,
+                    data: mappingDataReal,
                 };
             } else {
                 response = {
