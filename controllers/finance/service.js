@@ -177,7 +177,7 @@ service.getExpenditure = async (data) => {
             }))
 
             mappingData.sort(function (a, b) {
-                return parseInt(b.id_expenditure) - parseInt(a.id_expenditure);
+                return parseInt(b.transaction_date) - parseInt(a.transaction_date);
             })
 
             if (mappingData) {
@@ -327,7 +327,7 @@ service.getIncome = async (data) => {
             }))
 
             mappingData.sort(function (a, b) {
-                return parseInt(b.id_income) - parseInt(a.id_income);
+                return new Date(b.transaction_date) - new Date(a.transaction_date);
             })
 
             if (mappingData) {
