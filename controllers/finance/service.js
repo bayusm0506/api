@@ -1,4 +1,5 @@
 const moment = require("moment");
+const numeral = require("numeral");
 
 const service = {};
 
@@ -475,10 +476,11 @@ service.getRekapitulasi = async (data) => {
                 }
             },
             group: ['transaction_date'],
+            order: [['transaction_date', 'ASC']]
         }).then(async (result) => {
             result.map((val) => {
                 labelExpenditure.push(moment(val.transaction_date).format("DD/MM/YYYY"));
-                datamapExpenditure.push(parseInt(val.amount));
+                datamapExpenditure.push(numeral(val.amount).format("0,0"));
             })
         });
 
