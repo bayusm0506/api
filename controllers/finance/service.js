@@ -459,52 +459,10 @@ service.delIncome = async (id_income) => {
 // Start Service Rekapitulasi
 
 service.getRekapitulasi = async (data) => {
-    let response, mappingExpenditure = [], mappingIncome = [], total_expenditure = 0, total_income = 0;
+    let response, mappingExpenditure = [], mappingIncome = [], total_expenditure = 0, total_income = 0, labelIncome = [], datamapIncome = [], labelExpenditure = [], datamapExpenditure = [];
 
     try {
-        let labelExpenditure = [], datamapExpenditure = [];
-        await model.Expenditure.findAll({
-            raw: true,
-            attributes: [
-                'transaction_date',
-                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
-            ],
-            where: {
-                transaction_date: {
-                    [Op.between]: [data.start_date, data.end_date]
-                }
-            },
-            group: ['transaction_date'],
-            order: [['transaction_date', 'ASC']]
-        }).then(async (result) => {
-            result.map((val) => {
-                labelExpenditure.push(moment(val.transaction_date).format("DD/MM/YYYY"));
-                datamapExpenditure.push(parseInt(val.amount));
-            })
-        });
-
-        await model.Expenditure.findAll({
-            raw: true,
-            attributes: [
-                'category_id',
-                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
-            ],
-            where: {
-                transaction_date: {
-                    [Op.between]: [data.start_date, data.end_date]
-                }
-            },
-            group: ['category_id'],
-        }).then(async (result) => {
-            await Promise.all(result.map(async (val) => {
-                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
-                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
-
-                total_expenditure = total_expenditure + parseInt(val.amount);
-                mappingExpenditure.push(val);
-            }))
-        });
-
+        // Table Income
         await model.Income.findAll({
             raw: true,
             attributes: [
@@ -527,17 +485,84 @@ service.getRekapitulasi = async (data) => {
             }))
         });
 
+        // Grafik Income
+        await model.Income.findAll({
+            raw: true,
+            attributes: [
+                'transaction_date',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['transaction_date'],
+            order: [['transaction_date', 'ASC']]
+        }).then(async (result) => {
+            result.map((val) => {
+                labelIncome.push(moment(val.transaction_date).format("DD/MM/YYYY"));
+                datamapIncome.push(parseInt(val.amount));
+            })
+        });
+
+        // Table Expenditure
+        await model.Expenditure.findAll({
+            raw: true,
+            attributes: [
+                'category_id',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['category_id'],
+        }).then(async (result) => {
+            await Promise.all(result.map(async (val) => {
+                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
+                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
+
+                total_expenditure = total_expenditure + parseInt(val.amount);
+                mappingExpenditure.push(val);
+            }))
+        });
+
+        // Grafik Expenditure
+        await model.Expenditure.findAll({
+            raw: true,
+            attributes: [
+                'transaction_date',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['transaction_date'],
+            order: [['transaction_date', 'ASC']]
+        }).then(async (result) => {
+            result.map((val) => {
+                labelExpenditure.push(moment(val.transaction_date).format("DD/MM/YYYY"));
+                datamapExpenditure.push(parseInt(val.amount));
+            })
+        });
+
         response = {
             code: "01",
             description: status.description.VIEW,
             data: {
-                total_expenditure: total_expenditure,
-                data_expenditure: mappingExpenditure,
                 total_income: total_income,
                 data_income: mappingIncome,
-                rest_amount: parseInt(total_income) - parseInt(total_expenditure),
+                label_income: labelIncome,
+                datamap_income: datamapIncome,
+                total_expenditure: total_expenditure,
+                data_expenditure: mappingExpenditure,
                 label_expend: labelExpenditure,
-                datamap_expend: datamapExpenditure
+                datamap_expend: datamapExpenditure,
+                rest_amount: parseInt(total_income) - parseInt(total_expenditure)
             },
         };
     } catch (error) {
