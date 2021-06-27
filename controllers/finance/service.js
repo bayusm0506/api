@@ -1,5 +1,4 @@
 const moment = require("moment");
-const numeral = require("numeral");
 
 const service = {};
 
