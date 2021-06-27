@@ -7,7 +7,7 @@ const db = require("../../config/database");
 const api = require("./api")
 
 const {
-    Op
+    Op, Sequelize
 } = require("sequelize");
 
 // Start Service Category
@@ -453,5 +453,80 @@ service.delIncome = async (id_income) => {
 };
 
 // End Service Income
+
+// Start Service Rekapitulasi
+
+service.getRekapitulasi = async (data) => {
+    let response, mappingExpenditure = [], mappingIncome = [], total_expenditure = 0, total_income = 0;
+
+    try {
+
+        await model.Expenditure.findAll({
+            raw: true,
+            attributes: [
+                'category_id',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['category_id'],
+        }).then(async (result) => {
+            await Promise.all(result.map(async (val) => {
+                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
+                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
+
+                total_expenditure = total_expenditure + parseInt(val.amount);
+                mappingExpenditure.push(val);
+            }))
+        });
+
+        await model.Income.findAll({
+            raw: true,
+            attributes: [
+                'category_id',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['category_id'],
+        }).then(async (result) => {
+            await Promise.all(result.map(async (val) => {
+                let kategori = val.category_id ? await api.getKategori(val.category_id) : "";
+                val.ur_kategori = kategori.length > 0 ? kategori[0].name : "";
+
+                total_income = total_income + parseInt(val.amount);
+                mappingIncome.push(val)
+            }))
+        });
+
+        response = {
+            code: "01",
+            description: status.description.VIEW,
+            data: {
+                total_expenditure: total_expenditure,
+                data_expenditure: mappingExpenditure,
+                total_income: total_income,
+                data_income: mappingIncome,
+                rest_amount: parseInt(total_income) - parseInt(total_expenditure)
+            },
+        };
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+}
+
+// End Service Rekapitulasi
 
 module.exports = service;

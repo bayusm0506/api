@@ -23,4 +23,6 @@ router.post("/income", verifyToken, Validate.income.checkIncome, controller.inco
 router.put("/income/:id", verifyToken, Validate.income.checkIncome, controller.income.putIncome);
 router.delete("/income/:id", verifyToken, controller.income.delIncome);
 
+router.get("/rekapitulasi", verifyToken, controller.rekapitulasi.getRekapitulasi);
+
 module.exports = router;

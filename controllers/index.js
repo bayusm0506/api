@@ -5,6 +5,7 @@ const mobile = require("./mobile");
 const category = require("./finance/category");
 const expenditure = require("./finance/expenditure");
 const income = require("./finance/income");
+const rekapitulasi = require("./finance/rekapitulasi");
 
 module.exports = {
   register: register,
@@ -12,4 +13,5 @@ module.exports = {
   category: category,
   expenditure: expenditure,
   income: income,
+  rekapitulasi: rekapitulasi,
 };
