@@ -480,7 +480,7 @@ service.getRekapitulasi = async (data) => {
         }).then(async (result) => {
             result.map((val) => {
                 labelExpenditure.push(moment(val.transaction_date).format("DD/MM/YYYY"));
-                datamapExpenditure.push(numeral(val.amount).format("0,0"));
+                datamapExpenditure.push(parseInt(val.amount));
             })
         });
 
