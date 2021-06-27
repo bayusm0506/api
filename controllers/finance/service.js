@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const service = {};
 
 const model = require("../../models");
@@ -460,6 +462,25 @@ service.getRekapitulasi = async (data) => {
     let response, mappingExpenditure = [], mappingIncome = [], total_expenditure = 0, total_income = 0;
 
     try {
+        let labelExpenditure = [], datamapExpenditure = [];
+        await model.Expenditure.findAll({
+            raw: true,
+            attributes: [
+                'transaction_date',
+                [Sequelize.fn('sum', Sequelize.col('amount')), 'amount'],
+            ],
+            where: {
+                transaction_date: {
+                    [Op.between]: [data.start_date, data.end_date]
+                }
+            },
+            group: ['transaction_date'],
+        }).then(async (result) => {
+            result.map((val) => {
+                labelExpenditure.push(moment(val.transaction_date).format("DD/MM/YYYY"));
+                datamapExpenditure.push(parseInt(val.amount));
+            })
+        });
 
         await model.Expenditure.findAll({
             raw: true,
@@ -513,7 +534,9 @@ service.getRekapitulasi = async (data) => {
                 data_expenditure: mappingExpenditure,
                 total_income: total_income,
                 data_income: mappingIncome,
-                rest_amount: parseInt(total_income) - parseInt(total_expenditure)
+                rest_amount: parseInt(total_income) - parseInt(total_expenditure),
+                label_expend: labelExpenditure,
+                datamap_expend: datamapExpenditure
             },
         };
     } catch (error) {
