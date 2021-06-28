@@ -213,6 +213,48 @@ service.getExpenditure = async (data) => {
     return response;
 };
 
+service.getAutoCompleteKetExpenditure = async (data) => {
+    let response;
+
+    try {
+        await model.Expenditure.findAll({
+            raw: true,
+            attributes: [
+                'detail'
+            ],
+            where: {
+                detail: {
+                    [Op.iLike]: '%' + data.keywords + '%'
+                }
+            },
+            group: ['detail'],
+            order: [['detail', 'ASC']]
+        }).then(async (result) => {
+            if (result) {
+                response = {
+                    code: "01",
+                    description: status.description.VIEW,
+                    data: result,
+                };
+            } else {
+                response = {
+                    code: "01",
+                    description: status.description.DATA_NOT_FOUND,
+                    data: [],
+                };
+            }
+        });
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
 service.postExpenditure = async (data) => {
     let response;
     try {
@@ -349,6 +391,48 @@ service.getIncome = async (data) => {
                     code: "01",
                     description: status.description.VIEW,
                     data: mappingDataReal,
+                };
+            } else {
+                response = {
+                    code: "01",
+                    description: status.description.DATA_NOT_FOUND,
+                    data: [],
+                };
+            }
+        });
+    } catch (error) {
+        // Error
+        response = {
+            code: "02",
+            description: JSON.stringify(error),
+        };
+    }
+
+    return response;
+};
+
+service.getAutoCompleteKetIncome = async (data) => {
+    let response;
+
+    try {
+        await model.Income.findAll({
+            raw: true,
+            attributes: [
+                'detail'
+            ],
+            where: {
+                detail: {
+                    [Op.iLike]: '%' + data.keywords + '%'
+                }
+            },
+            group: ['detail'],
+            order: [['detail', 'ASC']]
+        }).then(async (result) => {
+            if (result) {
+                response = {
+                    code: "01",
+                    description: status.description.VIEW,
+                    data: result,
                 };
             } else {
                 response = {
